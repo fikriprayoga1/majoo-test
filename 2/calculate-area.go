@@ -27,5 +27,6 @@ func main() {
 		SecondValue: 10,
 		ShapeType:   "persegi",
 	}
-	log.Printf("groupData area: %v", groupData.area())
+	result := groupData.area()
+	log.Printf("groupData area: %v", result)
 }

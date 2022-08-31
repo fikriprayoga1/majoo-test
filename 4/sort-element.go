@@ -4,7 +4,7 @@ import "log"
 
 func main() {
 	sourceValue := []float64{4, -7, -5, 3, 3.3, 9, 0, 10, 0.2}
-	result := BubbleSort(sourceValue, "dsc")
+	result := BubbleSort(sourceValue, "asc")
 	log.Printf("logInfo : Result => %v", result)
 }
 
