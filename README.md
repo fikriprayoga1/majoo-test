@@ -19,7 +19,19 @@ I think variable name is not recomended because hard to understand
 - Shift value every next value bigger than current value if decending & shift value every next value smaller than current value if ascending
 
 
-## Description Section
+## Guide Section
 
-### Rest API Documentation
-[Postman Documentation](https://documenter.getpostman.com/view/4459576/VUxLwoEF)
+### Rest API
+Click [Postman Documentation](https://documenter.getpostman.com/view/4459576/VUxLwoEF) to go to Rest API guide
+
+### Run Unit Test
+##### Step :
+- Move to directory 1 or 2 eend so on
+- type ``` go test -v ``` and then press enter
+
+### Prepare & Run Docker
+##### Step :
+- Move to directory 1
+- type ``` docker build -t fikriprayoga1/majoo-server:1.0 . ``` and then press enter
+- If you don't have mongo image, type ``` docker pull mongo ``` and then press enter
+- type ``` docker compose up -d ``` and then press enter 
