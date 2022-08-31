@@ -71,6 +71,7 @@ func initServer() {
 	http.HandleFunc("/read/user", middleware.ReadUser)
 	http.HandleFunc("/read/merchants", middleware.ReadMerchants)
 	http.HandleFunc("/read/outlets", middleware.ReadOutlets)
+	http.HandleFunc("/read/transactions", middleware.ReadTransactions)
 	http.HandleFunc("/read/transactions/simple", middleware.ReadTransactionsSimple)
 	http.HandleFunc("/read/transactions/complete", middleware.ReadTransactionsComplete)
 	http.HandleFunc("/update/user", middleware.UpdateUser)

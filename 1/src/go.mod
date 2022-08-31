@@ -12,6 +12,7 @@ require (
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/northbright/keygen v0.0.0-20170803041644-d86865993a90
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/stretchr/testify v1.6.1
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
 	github.com/xdg-go/stringprep v1.0.3 // indirect
@@ -21,4 +22,9 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 )
 
-require github.com/northbright/pathhelper v0.0.0-20220624061013-a987b8a0d722 // indirect
+require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/northbright/pathhelper v0.0.0-20220624061013-a987b8a0d722 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+)
