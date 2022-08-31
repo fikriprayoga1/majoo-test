@@ -16,7 +16,7 @@ I think variable name is not recomended because hard to understand
 ### Task 4
 ##### Step :
 - Create for loop with length of array repetition square
-- Shift value every next value bigger than current value if decending & shift value every next value smaller than current value if ascending
+- Shift value every next value bigger than current value if descending & shift value every next value smaller than current value if ascending
 
 
 ## Guide Section
