@@ -12,5 +12,6 @@ Step :
 - Every repetition, add value with result of Step 3
 
 ## Task 4
+Step :
 - Create for loop with length of array repetition square
 - Shift value every next value bigger than current value if decending & shift value every next value smaller than current value if ascending
