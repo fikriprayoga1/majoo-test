@@ -17,12 +17,12 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	// Variable section
 	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
 	var result *mongo.DeleteResult
-	var filter primitive.D
-	var responseJson []byte
-	var err error
 	var userId primitive.ObjectID
-	var _id string
+	var responseJson []byte
+	var filter primitive.D
 	var claims sjwt.Claims
+	var _id string
+	var err error
 
 	// Parse body
 	token := r.Header.Get("Authorization")
@@ -77,12 +77,12 @@ func DeleteMerchant(w http.ResponseWriter, r *http.Request) {
 	collectionMerchant := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[1])
 	var modelRequestDelete model.ModelRequestDelete
 	var result *mongo.DeleteResult
-	var filter primitive.D
-	var responseJson []byte
-	var err error
 	var userId primitive.ObjectID
-	var _id string
+	var responseJson []byte
+	var filter primitive.D
 	var claims sjwt.Claims
+	var _id string
+	var err error
 
 	// Parse body
 	err = json.NewDecoder(r.Body).Decode(&modelRequestDelete)
@@ -142,12 +142,12 @@ func DeleteOutlet(w http.ResponseWriter, r *http.Request) {
 	collectionOutlet := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
 	var modelRequestDelete model.ModelRequestDelete
 	var result *mongo.DeleteResult
-	var filter primitive.D
-	var responseJson []byte
-	var err error
 	var userId primitive.ObjectID
-	var _id string
+	var responseJson []byte
+	var filter primitive.D
 	var claims sjwt.Claims
+	var _id string
+	var err error
 
 	// Parse body
 	err = json.NewDecoder(r.Body).Decode(&modelRequestDelete)
@@ -207,12 +207,12 @@ func DeleteTransaction(w http.ResponseWriter, r *http.Request) {
 	collectionTransaction := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
 	var modelRequestDelete model.ModelRequestDelete
 	var result *mongo.DeleteResult
-	var filter primitive.D
-	var responseJson []byte
-	var err error
 	var userId primitive.ObjectID
-	var _id string
+	var responseJson []byte
+	var filter primitive.D
 	var claims sjwt.Claims
+	var _id string
+	var err error
 
 	// Parse body
 	err = json.NewDecoder(r.Body).Decode(&modelRequestDelete)

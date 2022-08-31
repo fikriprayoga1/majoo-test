@@ -16,19 +16,19 @@ import (
 
 func CreateMerchant(w http.ResponseWriter, r *http.Request) {
 	// Variable section
-	var modelRequestCreateMerchant model.ModelRequestCreateMerchant
-	var filterId primitive.D
-	var err error
-	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
 	collectionMerchant := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[1])
-	var modelDatabaseUser model.ModelDatabaseUser
+	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
+	var modelRequestCreateMerchant model.ModelRequestCreateMerchant
 	var modelDatabaseMerchant model.ModelDatabaseMerchant
+	var modelDatabaseUser model.ModelDatabaseUser
 	var modelResponse model.ModelResponse
+	var userId primitive.ObjectID
+	var filterId primitive.D
 	var responseJson []byte
+	var claims sjwt.Claims
 	var token string
 	var _id string
-	var userId primitive.ObjectID
-	var claims sjwt.Claims
+	var err error
 
 	// Parse section
 	err = json.NewDecoder(r.Body).Decode(&modelRequestCreateMerchant)
@@ -116,21 +116,21 @@ func CreateMerchant(w http.ResponseWriter, r *http.Request) {
 
 func CreateOutlet(w http.ResponseWriter, r *http.Request) {
 	// Variable section
-	var modelRequestCreateOutlet model.ModelRequestCreateOutlet
-	var filterId primitive.D
-	var err error
-	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
 	collectionMerchant := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[1])
 	collectionOutlet := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
-	var modelDatabaseUser model.ModelDatabaseUser
+	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
+	var modelRequestCreateOutlet model.ModelRequestCreateOutlet
 	var modelDatabaseMerchant model.ModelDatabaseMerchant
 	var modelDatabaseOutlet model.ModelDatabaseOutlet
+	var modelDatabaseUser model.ModelDatabaseUser
 	var modelResponse model.ModelResponse
-	var responseJson []byte
-	var token string
-	var _id string
 	var userId primitive.ObjectID
+	var filterId primitive.D
+	var responseJson []byte
 	var claims sjwt.Claims
+	var token string
+	var err error
+	var _id string
 
 	// Parse section
 	err = json.NewDecoder(r.Body).Decode(&modelRequestCreateOutlet)
@@ -234,23 +234,23 @@ func CreateOutlet(w http.ResponseWriter, r *http.Request) {
 
 func CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	// Variable section
-	var modelRequestCreateTransaction model.ModelRequestCreateTransaction
-	var filterId primitive.D
-	var err error
-	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
+	collectionTransaction := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
 	collectionMerchant := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[1])
 	collectionOutlet := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
-	collectionTransaction := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
-	var modelDatabaseUser model.ModelDatabaseUser
+	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
+	var modelRequestCreateTransaction model.ModelRequestCreateTransaction
+	var modelDatabaseTransaction model.ModelDatabaseTransaction
 	var modelDatabaseMerchant model.ModelDatabaseMerchant
 	var modelDatabaseOutlet model.ModelDatabaseOutlet
-	var modelDatabaseTransaction model.ModelDatabaseTransaction
+	var modelDatabaseUser model.ModelDatabaseUser
 	var modelResponse model.ModelResponse
+	var userId primitive.ObjectID
+	var filterId primitive.D
 	var responseJson []byte
+	var claims sjwt.Claims
 	var token string
 	var _id string
-	var userId primitive.ObjectID
-	var claims sjwt.Claims
+	var err error
 
 	// Parse section
 	err = json.NewDecoder(r.Body).Decode(&modelRequestCreateTransaction)

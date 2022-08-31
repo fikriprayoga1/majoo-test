@@ -16,13 +16,13 @@ import (
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	// Variable section
-	var modelRequestRegister model.ModelRequestRegister
-	var filterUserId primitive.D
-	var err error
 	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
+	var modelRequestRegister model.ModelRequestRegister
 	var modelDatabaseUser model.ModelDatabaseUser
 	var modelResponse model.ModelResponse
+	var filterUserId primitive.D
 	var responseJson []byte
+	var err error
 
 	// Parse section
 	err = json.NewDecoder(r.Body).Decode(&modelRequestRegister)
@@ -78,16 +78,16 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	// Variable section
-	var modelRequestLogin model.ModelRequestLogin
-	var err error
-	var claims *sjwt.Claims
-	var jwt string
-	var responseJson []byte
-	var filter primitive.M
+	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
 	var modelResponseLogin model.ModelResponseLogin
+	var modelRequestLogin model.ModelRequestLogin
 	var modelDatabaseUser model.ModelDatabaseUser
 	var modelResponseUser model.ModelResponseUser
-	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
+	var claims *sjwt.Claims
+	var responseJson []byte
+	var filter primitive.M
+	var jwt string
+	var err error
 
 	// Parse body
 	err = json.NewDecoder(r.Body).Decode(&modelRequestLogin)
@@ -157,9 +157,9 @@ func ErrorHandler(err error, w http.ResponseWriter, responseCode int, responseMe
 }
 
 func clearMerchants(w http.ResponseWriter, userId primitive.ObjectID) {
+	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
 	collectionMerchants := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[1])
 	collectionOutlets := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
-	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
 	var err error
 
 	filter := bson.D{{Key: "user_id", Value: userId}}
@@ -183,8 +183,8 @@ func clearMerchants(w http.ResponseWriter, userId primitive.ObjectID) {
 }
 
 func clearOutlets(w http.ResponseWriter, merchantId primitive.ObjectID) {
-	collectionOutlets := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
 	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
+	collectionOutlets := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
 	var err error
 
 	filter := bson.D{{Key: "merchant_id", Value: merchantId}}

@@ -43,3 +43,16 @@ type ModelResponseTransaction struct {
 	Updated_at primitive.Timestamp `json:"updated_at,omitempty"`
 	Update_by  int64               `json:"updated_by,omitempty"`
 }
+
+type ModelResponseDate struct {
+	Year  int `bson:"year,omitempty" json:"year,omitempty"`
+	Month int `bson:"month,omitempty" json:"month,omitempty"`
+	Day   int `bson:"day,omitempty" json:"day,omitempty"`
+}
+
+type ModelResponseTransactionComplete struct {
+	Date          *ModelResponseDate `bson:"_id,omitempty" json:"_id,omitempty"`
+	Bill_total    int                `bson:"bill_total,omitempty" json:"bill_total,omitempty"`
+	Merchant_name string             `bson:"merchant_name,omitempty" json:"merchant_name,omitempty"`
+	Outlet_name   string             `bson:"outlet_name,omitempty" json:"outlet_name,omitempty"`
+}

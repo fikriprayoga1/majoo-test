@@ -2,13 +2,13 @@ package model
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type ModelRequestLogin struct {
+type ModelRequestRegister struct {
+	Name      string `json:"name,omitempty"`
 	User_name string `json:"user_name,omitempty"`
 	Password  string `json:"password,omitempty"`
 }
 
-type ModelRequestRegister struct {
-	Name      string `json:"name,omitempty"`
+type ModelRequestLogin struct {
 	User_name string `json:"user_name,omitempty"`
 	Password  string `json:"password,omitempty"`
 }

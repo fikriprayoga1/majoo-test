@@ -45,16 +45,3 @@ type ModelDatabaseTransaction struct {
 	Updated_at  primitive.Timestamp `bson:"updated_at,omitempty"`
 	Update_by   int64               `bson:"updated_by,omitempty"`
 }
-
-type ModelDatabaseId struct {
-	Year  int `bson:"year,omitempty" json:"year,omitempty"`
-	Month int `bson:"month,omitempty" json:"month,omitempty"`
-	Day   int `bson:"day,omitempty" json:"day,omitempty"`
-}
-
-type ModelDatabaseReport struct {
-	Date          *ModelDatabaseId `bson:"_id,omitempty" json:"_id,omitempty"`
-	Bill_total    int              `bson:"bill_total,omitempty" json:"bill_total,omitempty"`
-	Merchant_name string           `bson:"merchant_name,omitempty" json:"merchant_name,omitempty"`
-	Outlet_name   string           `bson:"outlet_name,omitempty" json:"outlet_name,omitempty"`
-}

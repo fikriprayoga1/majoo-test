@@ -26,8 +26,8 @@ func TestMain(m *testing.M) {
 
 func TestRegister(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{
@@ -45,17 +45,16 @@ func TestRegister(t *testing.T) {
 	handler = http.HandlerFunc(middleware.Register)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestLogin(t *testing.T) {
-	var rr *httptest.ResponseRecorder
-	var req *http.Request
-	var handler http.HandlerFunc
-	var err error
 	var modelResponseLogin model.ModelResponseLogin
+	var rr *httptest.ResponseRecorder
+	var handler http.HandlerFunc
+	var req *http.Request
+	var err error
 
 	jsonStr := []byte(`{
 		"user_name": "budi0",
@@ -71,7 +70,6 @@ func TestLogin(t *testing.T) {
 	handler = http.HandlerFunc(middleware.Login)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 	err = json.NewDecoder(rr.Body).Decode(&modelResponseLogin)
@@ -85,8 +83,8 @@ func TestLogin(t *testing.T) {
 
 func TestCreateMerchant(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{
@@ -103,16 +101,15 @@ func TestCreateMerchant(t *testing.T) {
 	handler = http.HandlerFunc(middleware.CreateMerchant)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestReadMerchant(t *testing.T) {
-	var rr *httptest.ResponseRecorder
-	var req *http.Request
-	var handler http.HandlerFunc
 	var modelResponseMerchants []model.ModelResponseMerchant
+	var rr *httptest.ResponseRecorder
+	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	req, err = http.NewRequest("GET", "/read/merchants", nil)
@@ -126,7 +123,6 @@ func TestReadMerchant(t *testing.T) {
 	handler = http.HandlerFunc(middleware.ReadMerchants)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 	err = json.NewDecoder(rr.Body).Decode(&modelResponseMerchants)
@@ -140,8 +136,8 @@ func TestReadMerchant(t *testing.T) {
 
 func TestCreateOutlets(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{
@@ -159,16 +155,15 @@ func TestCreateOutlets(t *testing.T) {
 	handler = http.HandlerFunc(middleware.CreateOutlet)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestReadOutlets(t *testing.T) {
-	var rr *httptest.ResponseRecorder
-	var req *http.Request
-	var handler http.HandlerFunc
 	var modelResponseOutlets []model.ModelResponseOutlet
+	var rr *httptest.ResponseRecorder
+	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	req, err = http.NewRequest("GET", "/read/outlets", nil)
@@ -185,7 +180,6 @@ func TestReadOutlets(t *testing.T) {
 	handler = http.HandlerFunc(middleware.ReadOutlets)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 	err = json.NewDecoder(rr.Body).Decode(&modelResponseOutlets)
@@ -199,8 +193,8 @@ func TestReadOutlets(t *testing.T) {
 
 func TestCreateTransactions(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{
@@ -219,16 +213,15 @@ func TestCreateTransactions(t *testing.T) {
 	handler = http.HandlerFunc(middleware.CreateTransaction)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestReadTransactions(t *testing.T) {
-	var rr *httptest.ResponseRecorder
-	var req *http.Request
-	var handler http.HandlerFunc
 	var modelResponseTransactions []model.ModelResponseTransaction
+	var rr *httptest.ResponseRecorder
+	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	req, err = http.NewRequest("GET", "/read/transactions", nil)
@@ -246,7 +239,6 @@ func TestReadTransactions(t *testing.T) {
 	handler = http.HandlerFunc(middleware.ReadTransactions)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 	err = json.NewDecoder(rr.Body).Decode(&modelResponseTransactions)
@@ -260,8 +252,8 @@ func TestReadTransactions(t *testing.T) {
 
 func TestReadTransactionsSimple(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	req, err = http.NewRequest("GET", "/read/transactions/simple", nil)
@@ -280,15 +272,14 @@ func TestReadTransactionsSimple(t *testing.T) {
 	handler = http.HandlerFunc(middleware.ReadTransactionsSimple)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestReadTransactionsComplete(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	req, err = http.NewRequest("GET", "/read/transactions/complete", nil)
@@ -307,15 +298,14 @@ func TestReadTransactionsComplete(t *testing.T) {
 	handler = http.HandlerFunc(middleware.ReadTransactionsComplete)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestUpdateUser(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{
@@ -334,15 +324,14 @@ func TestUpdateUser(t *testing.T) {
 	handler = http.HandlerFunc(middleware.UpdateUser)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestUpdateMerchant(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{
@@ -360,15 +349,14 @@ func TestUpdateMerchant(t *testing.T) {
 	handler = http.HandlerFunc(middleware.UpdateMerchant)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestUpdateOutlet(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{
@@ -387,15 +375,14 @@ func TestUpdateOutlet(t *testing.T) {
 	handler = http.HandlerFunc(middleware.UpdateOutlet)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestUpdateTransaction(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{
@@ -415,15 +402,14 @@ func TestUpdateTransaction(t *testing.T) {
 	handler = http.HandlerFunc(middleware.UpdateTransaction)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestDeleteTransaction(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{		
@@ -440,15 +426,14 @@ func TestDeleteTransaction(t *testing.T) {
 	handler = http.HandlerFunc(middleware.DeleteTransaction)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestDeleteOutlet(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{		
@@ -465,15 +450,14 @@ func TestDeleteOutlet(t *testing.T) {
 	handler = http.HandlerFunc(middleware.DeleteOutlet)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestDeleteMerchant(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	jsonStr := []byte(`{		
@@ -490,15 +474,14 @@ func TestDeleteMerchant(t *testing.T) {
 	handler = http.HandlerFunc(middleware.DeleteMerchant)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }
 
 func TestDeleteUser(t *testing.T) {
 	var rr *httptest.ResponseRecorder
-	var req *http.Request
 	var handler http.HandlerFunc
+	var req *http.Request
 	var err error
 
 	req, err = http.NewRequest("POST", "/delete/user", nil)
@@ -512,7 +495,6 @@ func TestDeleteUser(t *testing.T) {
 	handler = http.HandlerFunc(middleware.DeleteUser)
 	handler.ServeHTTP(rr, req)
 
-	log.Printf("logInfo : responseBody => %v", rr.Body.String())
 	require.Equal(t, http.StatusOK, rr.Code)
 
 }

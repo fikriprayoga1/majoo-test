@@ -19,15 +19,15 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var modelRequestUpdateUser model.ModelRequestUpdateUser
 	var modelDatabaseUser model.ModelDatabaseUser
 	var modelResponse model.ModelResponse
-	var update primitive.D
-	var filterUserId primitive.D
 	var result *mongo.UpdateResult
-	var responseJson []byte
-	var err error
 	var userId primitive.ObjectID
-	var _id string
+	var filterUserId primitive.D
+	var responseJson []byte
 	var claims sjwt.Claims
+	var update primitive.D
 	var token string
+	var _id string
+	var err error
 
 	// Parse body
 	err = json.NewDecoder(r.Body).Decode(&modelRequestUpdateUser)
@@ -104,15 +104,15 @@ func UpdateMerchant(w http.ResponseWriter, r *http.Request) {
 	var modelRequestUpdateMerchant model.ModelRequestUpdateMerchant
 	var modelDatabaseMerchant model.ModelDatabaseMerchant
 	var modelResponse model.ModelResponse
-	var update primitive.D
-	var filterId primitive.D
 	var result *mongo.UpdateResult
-	var responseJson []byte
-	var err error
 	var userId primitive.ObjectID
-	var _id string
+	var filterId primitive.D
+	var responseJson []byte
 	var claims sjwt.Claims
+	var update primitive.D
 	var token string
+	var _id string
+	var err error
 
 	// Parse body
 	err = json.NewDecoder(r.Body).Decode(&modelRequestUpdateMerchant)
@@ -187,15 +187,15 @@ func UpdateOutlet(w http.ResponseWriter, r *http.Request) {
 	var modelRequestUpdateOutlet model.ModelRequestUpdateOutlet
 	var modelDatabaseOutlet model.ModelDatabaseOutlet
 	var modelResponse model.ModelResponse
-	var update primitive.D
-	var filterId primitive.D
 	var result *mongo.UpdateResult
-	var responseJson []byte
-	var err error
 	var userId primitive.ObjectID
-	var _id string
+	var filterId primitive.D
+	var responseJson []byte
+	var update primitive.D
 	var claims sjwt.Claims
 	var token string
+	var _id string
+	var err error
 
 	// Parse body
 	err = json.NewDecoder(r.Body).Decode(&modelRequestUpdateOutlet)
@@ -270,15 +270,15 @@ func UpdateTransaction(w http.ResponseWriter, r *http.Request) {
 	var modelRequestUpdateTransaction model.ModelRequestUpdateTransaction
 	var modelDatabaseTransaction model.ModelDatabaseTransaction
 	var modelResponse model.ModelResponse
-	var update primitive.D
-	var filterId primitive.D
 	var result *mongo.UpdateResult
-	var responseJson []byte
-	var err error
 	var userId primitive.ObjectID
-	var _id string
+	var filterId primitive.D
+	var responseJson []byte
+	var update primitive.D
 	var claims sjwt.Claims
 	var token string
+	var _id string
+	var err error
 
 	// Parse body
 	err = json.NewDecoder(r.Body).Decode(&modelRequestUpdateTransaction)

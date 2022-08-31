@@ -20,16 +20,16 @@ import (
 
 func ReadUser(w http.ResponseWriter, r *http.Request) {
 	// Variable user
+	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
 	var modelResponseUser model.ModelResponseUser
 	var modelDatabaseUser model.ModelDatabaseUser
+	var userId primitive.ObjectID
 	var responseJson []byte
+	var claims sjwt.Claims
 	var filter primitive.D
-	var err error
 	var token string
 	var _id string
-	var userId primitive.ObjectID
-	var claims sjwt.Claims
-	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
+	var err error
 
 	// Parse body
 	token = r.Header.Get("Authorization")
@@ -83,20 +83,20 @@ func ReadUser(w http.ResponseWriter, r *http.Request) {
 
 func ReadMerchants(w http.ResponseWriter, r *http.Request) {
 	// Variable section
+	collectionMerchants := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[1])
 	var modelResponseMerchants []model.ModelResponseMerchant
-	var modelResponseMerchant model.ModelResponseMerchant
 	var modelDatabaseMerchants []model.ModelDatabaseMerchant
+	var modelResponseMerchant model.ModelResponseMerchant
 	var modelDatabaseMerchant model.ModelDatabaseMerchant
 	var responseObject interface{}
+	var userId primitive.ObjectID
 	var cursor *mongo.Cursor
 	var responseJson []byte
 	var filter primitive.D
-	var err error
+	var claims sjwt.Claims
 	var token string
 	var _id string
-	var userId primitive.ObjectID
-	var claims sjwt.Claims
-	collectionMerchants := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[1])
+	var err error
 
 	// Parse body
 	token = r.Header.Get("Authorization")
@@ -165,24 +165,24 @@ func ReadMerchants(w http.ResponseWriter, r *http.Request) {
 
 func ReadOutlets(w http.ResponseWriter, r *http.Request) {
 	// Variable section
+	collectionOutlets := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
 	var modelResponseOutlets []model.ModelResponseOutlet
-	var modelResponseOutlet model.ModelResponseOutlet
 	var modelDatabaseOutlets []model.ModelDatabaseOutlet
+	var modelResponseOutlet model.ModelResponseOutlet
 	var modelDatabaseOutlet model.ModelDatabaseOutlet
+	var merchantId primitive.ObjectID
 	var responseObject interface{}
-	var cursor *mongo.Cursor
-	var responseJson []byte
-	var filter primitive.D
-	var err error
-	var token string
-	var _id string
 	var userId primitive.ObjectID
-	var claims sjwt.Claims
 	var queryParameter url.Values
 	var requestParameter []string
 	var merchantIdString string
-	var merchantId primitive.ObjectID
-	collectionOutlets := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
+	var cursor *mongo.Cursor
+	var responseJson []byte
+	var filter primitive.D
+	var claims sjwt.Claims
+	var token string
+	var _id string
+	var err error
 
 	// Parse body
 	queryParameter = r.URL.Query()
@@ -264,26 +264,26 @@ func ReadOutlets(w http.ResponseWriter, r *http.Request) {
 
 func ReadTransactions(w http.ResponseWriter, r *http.Request) {
 	// Variable section
+	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
 	var modelResponseTransactions []model.ModelResponseTransaction
-	var modelResponseTransaction model.ModelResponseTransaction
 	var modelDatabaseTransactions []model.ModelDatabaseTransaction
+	var modelResponseTransaction model.ModelResponseTransaction
 	var modelDatabaseTransaction model.ModelDatabaseTransaction
+	var merchantId primitive.ObjectID
+	var outletId primitive.ObjectID
 	var responseObject interface{}
-	var cursor *mongo.Cursor
-	var responseJson []byte
-	var filter primitive.D
-	var err error
-	var token string
-	var _id string
 	var userId primitive.ObjectID
-	var claims sjwt.Claims
 	var queryParameter url.Values
 	var requestParameter []string
 	var merchantIdString string
 	var outletIdString string
-	var merchantId primitive.ObjectID
-	var outletId primitive.ObjectID
-	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
+	var cursor *mongo.Cursor
+	var responseJson []byte
+	var filter primitive.D
+	var claims sjwt.Claims
+	var token string
+	var _id string
+	var err error
 
 	// Parse body
 	queryParameter = r.URL.Query()
@@ -376,26 +376,26 @@ func ReadTransactions(w http.ResponseWriter, r *http.Request) {
 
 func ReadTransactionsSimple(w http.ResponseWriter, r *http.Request) {
 	// Variable section
-	var queryParameter url.Values
-	var offset string
-	var limit string
-	var limitNumber int
-	var timestampFrom string
+	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
+	var modelResponseTransactionCompletes []model.ModelResponseTransactionComplete
 	var timestampFromTime time.Time
-	var timestampTo string
-	var timestampToTime time.Time
 	var offsetId primitive.ObjectID
+	var responseObject interface{}
 	var userId primitive.ObjectID
-	var _id string
-	var claims sjwt.Claims
-	var token string
+	var queryParameter url.Values
+	var timestampToTime time.Time
 	var pipeline []primitive.D
 	var cursor *mongo.Cursor
-	var err error
-	var responseObject interface{}
+	var timestampFrom string
 	var responseJson []byte
-	var modelDatabaseReports []model.ModelDatabaseReport
-	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
+	var timestampTo string
+	var claims sjwt.Claims
+	var limitNumber int
+	var offset string
+	var limit string
+	var token string
+	var _id string
+	var err error
 
 	// Parse body
 	queryParameter = r.URL.Query()
@@ -537,14 +537,14 @@ func ReadTransactionsSimple(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = cursor.All(context.TODO(), &modelDatabaseReports)
+	err = cursor.All(context.TODO(), &modelResponseTransactionCompletes)
 	if err != nil {
 		ErrorHandler(err, w, http.StatusInternalServerError, util.Error116)
 		return
 	}
 
-	if modelDatabaseReports != nil {
-		responseObject = &modelDatabaseReports
+	if modelResponseTransactionCompletes != nil {
+		responseObject = &modelResponseTransactionCompletes
 
 	} else {
 		responseObject = bson.A{}
@@ -564,26 +564,26 @@ func ReadTransactionsSimple(w http.ResponseWriter, r *http.Request) {
 
 func ReadTransactionsComplete(w http.ResponseWriter, r *http.Request) {
 	// Variable section
-	var queryParameter url.Values
-	var offset string
-	var limit string
-	var limitNumber int
-	var timestampFrom string
-	var timestampFromTime time.Time
-	var timestampTo string
-	var timestampToTime time.Time
+	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
+	var modelResponseTransactionCompletes []model.ModelResponseTransactionComplete
 	var offsetId primitive.ObjectID
+	var timestampFromTime time.Time
+	var responseObject interface{}
+	var queryParameter url.Values
 	var userId primitive.ObjectID
-	var _id string
-	var claims sjwt.Claims
-	var token string
+	var timestampToTime time.Time
 	var pipeline []primitive.D
 	var cursor *mongo.Cursor
-	var err error
+	var timestampFrom string
 	var responseJson []byte
-	var responseObject interface{}
-	var modelDatabaseReports []model.ModelDatabaseReport
-	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
+	var timestampTo string
+	var claims sjwt.Claims
+	var limitNumber int
+	var offset string
+	var limit string
+	var token string
+	var _id string
+	var err error
 
 	// Parse body
 	queryParameter = r.URL.Query()
@@ -737,14 +737,14 @@ func ReadTransactionsComplete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = cursor.All(context.TODO(), &modelDatabaseReports)
+	err = cursor.All(context.TODO(), &modelResponseTransactionCompletes)
 	if err != nil {
 		ErrorHandler(err, w, http.StatusInternalServerError, util.Error127)
 		return
 	}
 
-	if modelDatabaseReports != nil {
-		responseObject = &modelDatabaseReports
+	if modelResponseTransactionCompletes != nil {
+		responseObject = &modelResponseTransactionCompletes
 
 	} else {
 		responseObject = bson.A{}
