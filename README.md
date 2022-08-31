@@ -4,7 +4,7 @@
 I think variable name is not recomended because hard to understand
 
 ## Task 3
-Step :
+### Step :
 - Save second input
 - Save first input
 - Substract second input with first input
@@ -12,6 +12,6 @@ Step :
 - Every repetition, add value with result of Step 3
 
 ## Task 4
-Step :
+### Step :
 - Create for loop with length of array repetition square
 - Shift value every next value bigger than current value if decending & shift value every next value smaller than current value if ascending
