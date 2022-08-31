@@ -26,7 +26,7 @@ Click [Postman Documentation](https://documenter.getpostman.com/view/4459576/VUx
 
 ### Run Unit Test
 ##### Step :
-- Move to directory 1 or 2 eend so on
+- Move to directory 1 or 2 end so on
 - type ``` go test -v ``` and then press enter
 
 ### Prepare & Run Docker
