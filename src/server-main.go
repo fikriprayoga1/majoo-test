@@ -17,45 +17,71 @@ import (
 )
 
 func main() {
+	// Variable section
+	var err error
+
+	// Program section
 	initDatabase()
 	initServer()
 
-	defer func() {
-		err := util.Client.Disconnect(context.TODO())
-		if err != nil {
-			panic(err)
-		}
-	}()
+	err = util.Client.Disconnect(context.TODO())
+	if err != nil {
+		log.Print(err)
+	}
 }
 
 func initDatabase() {
-	log.Println("logInfo : Database initializing . . .")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	// Variable section
+	var databaseUrl string
+	var ctx context.Context
+	var cancel context.CancelFunc
+	var err error
+
+	// Init timeout connection
+	log.Println("logInfo : Database init start")
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	databaseUrl := "mongodb://" + os.Getenv("MONGO_HOST") + ":27017"
-	var err error
+	// Connect to database
+	databaseUrl = "mongodb://" + os.Getenv("MONGO_HOST") + ":27017"
 	util.Client, err = mongo.Connect(ctx, options.Client().ApplyURI(databaseUrl))
 	if err != nil {
-		panic(err)
+		log.Print(err)
+		return
 	}
 
-	// Ping the primary
-	err2 := util.Client.Ping(ctx, readpref.Primary())
-	if err2 != nil {
-		panic(err2)
+	// Ping test
+	err = util.Client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Print(err)
+		return
 	}
 
-	log.Println("logInfo : Successfully connected and pinged")
-	log.Println("logInfo : Database initialized")
+	log.Println("logInfo : Database connected")
+	log.Println("logInfo : Database init finish")
 
 }
 
 func initServer() {
+	http.HandleFunc("/register", middleware.Register)
 	http.HandleFunc("/login", middleware.Login)
-	http.HandleFunc("/read", middleware.ReadReport)
-	http.HandleFunc("/readAdvanced", middleware.ReadReportAdvanced)
+	http.HandleFunc("/create/merchant", middleware.CreateMerchant)
+	http.HandleFunc("/create/outlet", middleware.CreateOutlet)
+	http.HandleFunc("/create/transaction", middleware.CreateTransaction)
+	http.HandleFunc("/read/user", middleware.ReadUser)
+	http.HandleFunc("/read/merchants", middleware.ReadMerchants)
+	http.HandleFunc("/read/outlets", middleware.ReadOutlets)
+	http.HandleFunc("/read/transactions/simple", middleware.ReadTransactionsSimple)
+	http.HandleFunc("/read/transactions/complete", middleware.ReadTransactionsComplete)
+	http.HandleFunc("/update/user", middleware.UpdateUser)
+	http.HandleFunc("/update/merchant", middleware.UpdateMerchant)
+	http.HandleFunc("/update/outlet", middleware.UpdateOutlet)
+	http.HandleFunc("/update/transaction", middleware.UpdateTransaction)
+	http.HandleFunc("/delete/user", middleware.DeleteUser)
+	http.HandleFunc("/delete/merchant", middleware.DeleteMerchant)
+	http.HandleFunc("/delete/outlet", middleware.DeleteOutlet)
+	http.HandleFunc("/delete/transaction", middleware.DeleteTransaction)
 
-	log.Printf("logInfo : Server listener started\n\n")
+	log.Println("logInfo : Server listener start")
 	log.Fatal(http.ListenAndServe(":"+util.Port, nil))
 }

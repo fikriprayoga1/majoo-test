@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -19,54 +18,364 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Login(w http.ResponseWriter, r *http.Request) {
-	var modelRequestLogin model.ModelRequestLogin
-	var err error
-	var claims *sjwt.Claims
-	var jwt string
+func ReadUser(w http.ResponseWriter, r *http.Request) {
+	// Variable user
+	var modelResponseUser model.ModelResponseUser
+	var modelDatabaseUser model.ModelDatabaseUser
 	var responseJson []byte
-	var modelResponseLogin model.ModelResponseLogin
+	var filter primitive.D
+	var err error
+	var token string
+	var _id string
+	var userId primitive.ObjectID
+	var claims sjwt.Claims
+	collectionUser := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[0])
 
 	// Parse body
-	err = json.NewDecoder(r.Body).Decode(&modelRequestLogin)
+	token = r.Header.Get("Authorization")
+	claims, err = sjwt.Parse(token)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusBadRequest, util.Error0)
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error77)
 		return
 	}
-	log.Printf("logInfo : Email => %v\n", modelRequestLogin.Email)
-	log.Printf("logInfo : Password => %v\n", modelRequestLogin.Password)
+	_id, err = claims.GetStr("_id")
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error78)
+		return
+	}
 
-	if (modelRequestLogin.Email == "mantap@gmail.com") && (modelRequestLogin.Password == "wokeh") {
-		// Add Claims
-		claims = sjwt.New()
-		claims.Set("id", "630c0ec7a335ddfa8f96e7bc")
+	userId, err = primitive.ObjectIDFromHex(_id)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error79)
+		return
+	}
 
-		// Generate jwt
-		jwt = claims.Generate(util.GetScretKey())
-		log.Println(jwt)
-
-		modelResponseLogin = model.ModelResponseLogin{
-			ResponseMessage: "Login Success",
-			Token:           jwt,
-		}
-
-		responseJson, err = json.Marshal(&modelResponseLogin)
-		if err != nil {
-			ErrorHandler(err, w, http.StatusInternalServerError, util.Error1)
+	// begin find
+	filter = bson.D{{Key: "_id", Value: userId}}
+	err = collectionUser.FindOne(
+		context.TODO(),
+		filter,
+	).Decode(&modelDatabaseUser)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			ErrorHandler(err, w, http.StatusNotFound, util.Error80)
 			return
 		}
-
-		log.Printf("logInfo : => %v\n", string(responseJson))
-
-		w.Header().Set("content-type", "application/json")
-		w.Write(responseJson)
-	} else {
-		ErrorHandler(err, w, http.StatusForbidden, util.Error2)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error81)
+		return
 	}
+
+	// Create response
+	modelResponseUser = model.ModelResponseUser{
+		Name:      modelDatabaseUser.Name,
+		User_name: modelDatabaseUser.User_name,
+	}
+	responseJson, err = json.Marshal(modelResponseUser)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error82)
+		return
+	}
+
+	w.Header().Set("content-type", "application/json")
+	w.Write(responseJson)
 
 }
 
-func ReadReport(w http.ResponseWriter, r *http.Request) {
+func ReadMerchants(w http.ResponseWriter, r *http.Request) {
+	// Variable section
+	var modelResponseMerchants []model.ModelResponseMerchant
+	var modelResponseMerchant model.ModelResponseMerchant
+	var modelDatabaseMerchants []model.ModelDatabaseMerchant
+	var modelDatabaseMerchant model.ModelDatabaseMerchant
+	var responseObject interface{}
+	var cursor *mongo.Cursor
+	var responseJson []byte
+	var filter primitive.D
+	var err error
+	var token string
+	var _id string
+	var userId primitive.ObjectID
+	var claims sjwt.Claims
+	collectionMerchants := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[1])
+
+	// Parse body
+	token = r.Header.Get("Authorization")
+	claims, err = sjwt.Parse(token)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error83)
+		return
+	}
+	_id, err = claims.GetStr("_id")
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error84)
+		return
+	}
+
+	userId, err = primitive.ObjectIDFromHex(_id)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error85)
+		return
+	}
+
+	// begin find
+	filter = bson.D{{Key: "user_id", Value: userId}}
+	cursor, err = collectionMerchants.Find(context.TODO(), filter)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusNotFound, util.Error86)
+		return
+	}
+	err = cursor.All(context.TODO(), &modelDatabaseMerchants)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error87)
+		return
+	}
+
+	// Read data
+	for _, modelDatabaseMerchant = range modelDatabaseMerchants {
+		modelResponseMerchant = model.ModelResponseMerchant{
+			Id:            modelDatabaseMerchant.Id,
+			Merchant_name: modelDatabaseMerchant.Merchant_name,
+			Created_at:    modelDatabaseMerchant.Created_at,
+			Created_by:    modelDatabaseMerchant.Created_by,
+			Updated_at:    modelDatabaseMerchant.Updated_at,
+			Update_by:     modelDatabaseMerchant.Update_by,
+		}
+		modelResponseMerchants = append(modelResponseMerchants, modelResponseMerchant)
+
+	}
+
+	if modelDatabaseMerchants != nil {
+		responseObject = &modelResponseMerchants
+
+	} else {
+		responseObject = bson.A{}
+
+	}
+
+	responseJson, err = json.Marshal(responseObject)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error88)
+		return
+	}
+
+	w.Header().Set("content-type", "application/json")
+	w.Write(responseJson)
+
+}
+
+func ReadOutlets(w http.ResponseWriter, r *http.Request) {
+	// Variable section
+	var modelResponseOutlets []model.ModelResponseOutlet
+	var modelResponseOutlet model.ModelResponseOutlet
+	var modelDatabaseOutlets []model.ModelDatabaseOutlet
+	var modelDatabaseOutlet model.ModelDatabaseOutlet
+	var responseObject interface{}
+	var cursor *mongo.Cursor
+	var responseJson []byte
+	var filter primitive.D
+	var err error
+	var token string
+	var _id string
+	var userId primitive.ObjectID
+	var claims sjwt.Claims
+	var queryParameter url.Values
+	var requestParameter []string
+	var merchantIdString string
+	var merchantId primitive.ObjectID
+	collectionOutlets := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[2])
+
+	// Parse body
+	queryParameter = r.URL.Query()
+	requestParameter = queryParameter["merchant_id"]
+	if requestParameter == nil {
+		ErrorHandler(err, w, http.StatusNotFound, util.Error89)
+		return
+	}
+	merchantIdString = requestParameter[0]
+
+	token = r.Header.Get("Authorization")
+	claims, err = sjwt.Parse(token)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error90)
+		return
+	}
+	_id, err = claims.GetStr("_id")
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error91)
+		return
+	}
+
+	userId, err = primitive.ObjectIDFromHex(_id)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error92)
+		return
+	}
+	merchantId, err = primitive.ObjectIDFromHex(merchantIdString)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error93)
+		return
+	}
+
+	// begin find
+	filter = bson.D{{Key: "user_id", Value: userId}, {Key: "merchant_id", Value: merchantId}}
+	cursor, err = collectionOutlets.Find(context.TODO(), filter)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error94)
+		return
+	}
+	err = cursor.All(context.TODO(), &modelDatabaseOutlets)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error95)
+		return
+	}
+
+	// Read data
+	for _, modelDatabaseOutlet = range modelDatabaseOutlets {
+		modelResponseOutlet = model.ModelResponseOutlet{
+			Id:          modelDatabaseOutlet.Id,
+			Outlet_name: modelDatabaseOutlet.Outlet_name,
+			Created_at:  modelDatabaseOutlet.Created_at,
+			Created_by:  modelDatabaseOutlet.Created_by,
+			Updated_at:  modelDatabaseOutlet.Updated_at,
+			Update_by:   modelDatabaseOutlet.Update_by,
+		}
+		modelResponseOutlets = append(modelResponseOutlets, modelResponseOutlet)
+
+	}
+
+	if modelResponseOutlets != nil {
+		responseObject = &modelResponseOutlets
+
+	} else {
+		responseObject = bson.A{}
+
+	}
+
+	responseJson, err = json.Marshal(responseObject)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error96)
+		return
+	}
+
+	w.Header().Set("content-type", "application/json")
+	w.Write(responseJson)
+
+}
+
+func ReadTransactions(w http.ResponseWriter, r *http.Request) {
+	// Variable section
+	var modelResponseTransactions []model.ModelResponseTransaction
+	var modelResponseTransaction model.ModelResponseTransaction
+	var modelDatabaseTransactions []model.ModelDatabaseTransaction
+	var modelDatabaseTransaction model.ModelDatabaseTransaction
+	var responseObject interface{}
+	var cursor *mongo.Cursor
+	var responseJson []byte
+	var filter primitive.D
+	var err error
+	var token string
+	var _id string
+	var userId primitive.ObjectID
+	var claims sjwt.Claims
+	var queryParameter url.Values
+	var requestParameter []string
+	var merchantIdString string
+	var outletIdString string
+	var merchantId primitive.ObjectID
+	var outletId primitive.ObjectID
+	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
+
+	// Parse body
+	queryParameter = r.URL.Query()
+	requestParameter = queryParameter["merchant_id"]
+	if requestParameter == nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error97)
+		return
+	}
+	merchantIdString = requestParameter[0]
+	requestParameter = queryParameter["outlet_id"]
+	if requestParameter == nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error98)
+		return
+	}
+	outletIdString = requestParameter[0]
+
+	token = r.Header.Get("Authorization")
+	claims, err = sjwt.Parse(token)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error99)
+		return
+	}
+	_id, err = claims.GetStr("_id")
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error100)
+		return
+	}
+
+	userId, err = primitive.ObjectIDFromHex(_id)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error101)
+		return
+	}
+	merchantId, err = primitive.ObjectIDFromHex(merchantIdString)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error102)
+		return
+	}
+	outletId, err = primitive.ObjectIDFromHex(outletIdString)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error103)
+		return
+	}
+
+	// begin find
+	filter = bson.D{{Key: "user_id", Value: userId}, {Key: "merchant_id", Value: merchantId}, {Key: "outlet_id", Value: outletId}}
+	cursor, err = collectionTransactions.Find(context.TODO(), filter)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error104)
+		return
+	}
+	err = cursor.All(context.TODO(), &modelDatabaseTransactions)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error105)
+		return
+	}
+
+	// Read data
+	for _, modelDatabaseTransaction = range modelDatabaseTransactions {
+		modelResponseTransaction = model.ModelResponseTransaction{
+			Id:         modelDatabaseTransaction.Id,
+			Bill_total: modelDatabaseTransaction.Bill_total,
+			Created_at: modelDatabaseTransaction.Created_at,
+			Created_by: modelDatabaseTransaction.Created_by,
+			Updated_at: modelDatabaseTransaction.Updated_at,
+			Update_by:  modelDatabaseTransaction.Update_by,
+		}
+		modelResponseTransactions = append(modelResponseTransactions, modelResponseTransaction)
+
+	}
+
+	if modelResponseTransactions != nil {
+		responseObject = &modelResponseTransactions
+
+	} else {
+		responseObject = bson.A{}
+
+	}
+
+	responseJson, err = json.Marshal(responseObject)
+	if err != nil {
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error106)
+		return
+	}
+
+	w.Header().Set("content-type", "application/json")
+	w.Write(responseJson)
+
+}
+
+func ReadTransactionsSimple(w http.ResponseWriter, r *http.Request) {
+	// Variable section
 	var queryParameter url.Values
 	var offset string
 	var limit string
@@ -77,14 +386,15 @@ func ReadReport(w http.ResponseWriter, r *http.Request) {
 	var timestampToTime time.Time
 	var offsetId primitive.ObjectID
 	var userId primitive.ObjectID
-	var id string
+	var _id string
 	var claims sjwt.Claims
 	var token string
 	var pipeline []primitive.D
 	var cursor *mongo.Cursor
 	var err error
+	var responseObject interface{}
 	var responseJson []byte
-	var results []model.ModelResponseReport
+	var modelDatabaseReports []model.ModelDatabaseReport
 	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
 
 	// Parse body
@@ -97,56 +407,50 @@ func ReadReport(w http.ResponseWriter, r *http.Request) {
 
 	claims, err = sjwt.Parse(token)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusForbidden, util.Error3)
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error107)
 		return
 	}
-
-	// Get claims
-	id, err = claims.GetStr("id")
+	_id, err = claims.GetStr("_id")
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error4)
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error108)
 		return
 	}
 
 	if limit == "" {
-		ErrorHandler(nil, w, http.StatusBadRequest, util.Error5)
+		ErrorHandler(nil, w, http.StatusBadRequest, util.Error109)
 		return
 	}
-	log.Printf("logInfo : timestampFrom => %v\n", timestampFrom)
-	log.Printf("logInfo : timestampTo => %v\n", timestampTo)
-	log.Printf("logInfo : offset => %v\n", offset)
-	log.Printf("logInfo : limit => %v\n", limit)
 
 	limitNumber, err = strconv.Atoi(limit)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusForbidden, util.Error6)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error110)
 		return
 	}
 
 	if offset != "" {
 		offsetId, err = primitive.ObjectIDFromHex(offset)
 		if err != nil {
-			ErrorHandler(err, w, http.StatusInternalServerError, util.Error7)
+			ErrorHandler(err, w, http.StatusInternalServerError, util.Error111)
 			return
 		}
 	} else {
 		offsetId = primitive.NilObjectID
 	}
 
-	userId, err = primitive.ObjectIDFromHex(id)
+	userId, err = primitive.ObjectIDFromHex(_id)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error8)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error112)
 		return
 	}
 
-	timestampFromTime, err = time.Parse(time.RFC1123Z, timestampFrom)
+	timestampFromTime, err = time.Parse(time.RFC3339, timestampFrom)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error9)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error113)
 		return
 	}
-	timestampToTime, err = time.Parse(time.RFC1123Z, timestampTo)
+	timestampToTime, err = time.Parse(time.RFC3339, timestampTo)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error10)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error114)
 		return
 	}
 
@@ -158,7 +462,7 @@ func ReadReport(w http.ResponseWriter, r *http.Request) {
 					"_id": bson.M{
 						"$gte": offsetId,
 					},
-					"updated_at": bson.M{
+					"created_at": bson.M{
 						"$gte": primitive.Timestamp{
 							T: uint32(timestampFromTime.Unix()),
 						},
@@ -217,34 +521,49 @@ func ReadReport(w http.ResponseWriter, r *http.Request) {
 				Value: limitNumber,
 			},
 		},
+		{
+			{
+				Key: "$project",
+				Value: bson.M{
+					"outlet_name": 0,
+				},
+			},
+		},
 	}
 
 	cursor, err = collectionTransactions.Aggregate(context.TODO(), pipeline)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error11)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error115)
 		return
 	}
 
-	err = cursor.All(context.TODO(), &results)
+	err = cursor.All(context.TODO(), &modelDatabaseReports)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error12)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error116)
 		return
 	}
 
-	responseJson, err = json.Marshal(&results)
+	if modelDatabaseReports != nil {
+		responseObject = &modelDatabaseReports
+
+	} else {
+		responseObject = bson.A{}
+
+	}
+
+	responseJson, err = json.Marshal(&responseObject)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error13)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error117)
 		return
 	}
-
-	log.Printf("logInfo : => %v\n", string(responseJson))
 
 	w.Header().Set("content-type", "application/json")
 	w.Write(responseJson)
 
 }
 
-func ReadReportAdvanced(w http.ResponseWriter, r *http.Request) {
+func ReadTransactionsComplete(w http.ResponseWriter, r *http.Request) {
+	// Variable section
 	var queryParameter url.Values
 	var offset string
 	var limit string
@@ -255,14 +574,15 @@ func ReadReportAdvanced(w http.ResponseWriter, r *http.Request) {
 	var timestampToTime time.Time
 	var offsetId primitive.ObjectID
 	var userId primitive.ObjectID
-	var id string
+	var _id string
 	var claims sjwt.Claims
 	var token string
 	var pipeline []primitive.D
 	var cursor *mongo.Cursor
 	var err error
 	var responseJson []byte
-	var results []model.ModelResponseReport
+	var responseObject interface{}
+	var modelDatabaseReports []model.ModelDatabaseReport
 	collectionTransactions := util.Client.Database(util.DatabaseName).Collection(util.CollectionName[3])
 
 	// Parse body
@@ -275,56 +595,50 @@ func ReadReportAdvanced(w http.ResponseWriter, r *http.Request) {
 
 	claims, err = sjwt.Parse(token)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error14)
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error118)
 		return
 	}
-
-	// Get claims
-	id, err = claims.GetStr("id")
+	_id, err = claims.GetStr("_id")
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error15)
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error119)
 		return
 	}
 
 	if limit == "" {
-		ErrorHandler(nil, w, http.StatusBadRequest, util.Error16)
+		ErrorHandler(nil, w, http.StatusBadRequest, util.Error120)
 		return
 	}
-	log.Printf("logInfo : timestampFrom => %v\n", timestampFrom)
-	log.Printf("logInfo : timestampTo => %v\n", timestampTo)
-	log.Printf("logInfo : offset => %v\n", offset)
-	log.Printf("logInfo : limit => %v\n", limit)
 
 	limitNumber, err = strconv.Atoi(limit)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusForbidden, util.Error17)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error121)
 		return
 	}
 
 	if offset != "" {
 		offsetId, err = primitive.ObjectIDFromHex(offset)
 		if err != nil {
-			ErrorHandler(err, w, http.StatusInternalServerError, util.Error18)
+			ErrorHandler(err, w, http.StatusInternalServerError, util.Error122)
 			return
 		}
 	} else {
 		offsetId = primitive.NilObjectID
 	}
 
-	userId, err = primitive.ObjectIDFromHex(id)
+	userId, err = primitive.ObjectIDFromHex(_id)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error19)
+		ErrorHandler(err, w, http.StatusBadRequest, util.Error123)
 		return
 	}
 
-	timestampFromTime, err = time.Parse(time.RFC1123Z, timestampFrom)
+	timestampFromTime, err = time.Parse(time.RFC3339, timestampFrom)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error20)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error124)
 		return
 	}
-	timestampToTime, err = time.Parse(time.RFC1123Z, timestampTo)
+	timestampToTime, err = time.Parse(time.RFC3339, timestampTo)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error21)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error125)
 		return
 	}
 
@@ -336,7 +650,7 @@ func ReadReportAdvanced(w http.ResponseWriter, r *http.Request) {
 					"_id": bson.M{
 						"$gte": offsetId,
 					},
-					"updated_at": bson.M{
+					"created_at": bson.M{
 						"$gte": primitive.Timestamp{
 							T: uint32(timestampFromTime.Unix()),
 						},
@@ -419,23 +733,29 @@ func ReadReportAdvanced(w http.ResponseWriter, r *http.Request) {
 
 	cursor, err = collectionTransactions.Aggregate(context.TODO(), pipeline)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error22)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error126)
 		return
 	}
 
-	err = cursor.All(context.TODO(), &results)
+	err = cursor.All(context.TODO(), &modelDatabaseReports)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error23)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error127)
 		return
 	}
 
-	responseJson, err = json.Marshal(&results)
+	if modelDatabaseReports != nil {
+		responseObject = &modelDatabaseReports
+
+	} else {
+		responseObject = bson.A{}
+
+	}
+
+	responseJson, err = json.Marshal(&responseObject)
 	if err != nil {
-		ErrorHandler(err, w, http.StatusInternalServerError, util.Error24)
+		ErrorHandler(err, w, http.StatusInternalServerError, util.Error128)
 		return
 	}
-
-	log.Printf("logInfo : => %v\n", string(responseJson))
 
 	w.Header().Set("content-type", "application/json")
 	w.Write(responseJson)
