@@ -121,7 +121,7 @@ func DeleteMerchant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clearOutlets(w, userId)
+	clearOutlets(w, modelRequestDelete.Item_id)
 
 	// Create response
 	modelResponse := model.ModelResponse{
@@ -186,7 +186,7 @@ func DeleteOutlet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clearTransactions(w, userId)
+	clearTransactions(w, modelRequestDelete.Item_id)
 
 	// Create response
 	modelResponse := model.ModelResponse{

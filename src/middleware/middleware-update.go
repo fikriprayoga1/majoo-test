@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"src/model"
 	"src/util"
@@ -53,7 +52,6 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		ErrorHandler(err, w, http.StatusBadRequest, util.Error132)
 		return
 	}
-	log.Printf("logInfo : _id : %v\n", userId)
 
 	// Check id
 	filterUserId = bson.D{{Key: "_id", Value: userId}}
